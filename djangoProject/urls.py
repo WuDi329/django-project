@@ -24,4 +24,8 @@ urlpatterns = [
     path('user/add/', views.user_add),
     path('tpl/', views.tpl),
     path('news/', views.news),
+    path('get-token/', views.get_csrf_token),
+    path('doLogin/', views.login),
+    path('testLogin/', views.login_test),
+    path('user/info/', views.getInfo),
 ]
