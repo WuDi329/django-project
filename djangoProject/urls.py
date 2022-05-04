@@ -28,4 +28,8 @@ urlpatterns = [
     path('doLogin/', views.login),
     path('testLogin/', views.login_test),
     path('user/info/', views.getInfo),
+    path('test/ls', views.ls),
+    # /usr/bin/time
+    path('time/add/', views.addtime),
+
 ]

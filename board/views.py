@@ -1,5 +1,13 @@
+from decimal import Decimal
+
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse
+from django.utils import timezone
+
+from board.models import Bintime
+import re
+import os
+
 
 # Create your views here.
 from django.middleware.csrf import get_token
@@ -53,3 +61,39 @@ def getInfo(request):
         'name': 'Super Admin'
     }
     return JsonResponse({'code': 20000, 'info': admin_token})
+
+def ls(request):
+    instruction = 'ls'
+    f = os.popen(instruction)
+    msg = f.readlines()
+    return JsonResponse({'code': 20000, 'msg':msg})
+
+def addtime(request):
+    instruction = '/usr/bin/time -v -o time.txt'
+    # preprocessing
+    pname = request.GET.get('processname').replace("'", "")
+    params = request.GET.get('params').replace("'", "")
+    instruction = instruction + ' ' + pname + ' ' + params
+    os.system(instruction)
+    print(os.getcwd())
+    with open('time.txt', 'r') as f:
+        data = f.readlines()
+    print(data)
+    # print(Decimal(re.findall(r'\d+.\d+$', data[4])[0]))
+    # print(Decimal(re.findall(r'\d+.\d+$', data[1])[0]))
+    # print(Decimal(re.findall(r'\d+.\d+$', data[2])[0]))
+    # print(int(re.findall(r'\d+', data[3])[0]))
+    # print(Decimal(re.findall(r'\d+.\d+$', data[4])[0]))
+    # print(int(re.findall(r'\d+$', data[9])[0]))
+    create_time = timezone.now()
+    # print(re.findall(r'\w+$', '/home/wudi/1234/memtier_benchmark'))
+    b = Bintime(elf_name=re.findall(r'\w+$', pname)[0], run_time=create_time,
+                user_time=Decimal(re.findall(r'\d+.\d+$', data[1])[0]),
+                sys_time=Decimal(re.findall(r'\d+.\d+$', data[2])[0]),
+                cpu_per=int(re.findall(r'\d+', data[3])[0]),
+                elapse_time=Decimal(re.findall(r'\d+.\d+$', data[4])[0]),
+                max_size=int(re.findall(r'\d+$', data[9])[0]),
+                page_fault=int(re.findall(r'\d+$', data[11])[0]),
+                mpage_fault=int(re.findall(r'\d+$', data[12])[0]))
+    b.save()
+    return JsonResponse({'code': 20000})
