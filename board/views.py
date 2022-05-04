@@ -1,5 +1,6 @@
+import json
 from decimal import Decimal
-
+from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse
 from django.utils import timezone
@@ -97,3 +98,14 @@ def addtime(request):
                 mpage_fault=int(re.findall(r'\d+$', data[12])[0]))
     b.save()
     return JsonResponse({'code': 20000})
+
+def gettime(request):
+    pname = request.GET.get('processname').replace("'", "")
+    elf_name = re.findall(r'\w+$', pname)[0]
+    print(elf_name)
+    data = Bintime.objects.filter(elf_name=elf_name)
+    print(data)
+    return HttpResponse(json.dumps({
+        'code': 20000,
+        'data': serializers.serialize("json", data)
+    }))

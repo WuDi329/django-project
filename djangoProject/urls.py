@@ -31,5 +31,6 @@ urlpatterns = [
     path('test/ls', views.ls),
     # /usr/bin/time
     path('time/add/', views.addtime),
+    path('time/get/', views.gettime),
 
 ]
