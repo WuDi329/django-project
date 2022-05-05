@@ -32,5 +32,7 @@ urlpatterns = [
     # /usr/bin/time
     path('time/add/', views.addtime),
     path('time/get/', views.gettime),
+    path('time/avg/', views.avgtime),
+    path('time/getall/', views.getalltime)
 
 ]

@@ -4,7 +4,8 @@ from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse
 from django.utils import timezone
-
+from django.db.models import Avg
+from MyEncoder import MyEncoder
 from board.models import Bintime
 import re
 import os
@@ -109,3 +110,23 @@ def gettime(request):
         'code': 20000,
         'data': serializers.serialize("json", data)
     }))
+
+def getalltime(request):
+    data = list(Bintime.objects.values('id', 'elf_name', 'run_time', 'user_time', 'sys_time', 'cpu_per', 'elapse_time',
+                                       'max_size', 'page_fault', 'mpage_fault'))
+    # data = serializers.serialize("json", data)
+    print(data)
+    return JsonResponse({'code': 20000, 'data': data})
+    #return JsonResponse({"code": 20000, "data": json.dumps(data, cls=MyEncoder, indent=4)})
+    # return JsonResponse({'code': 20000, 'data': data})
+
+
+def avgtime(request):
+    pname = request.GET.get('processname').replace("'", "")
+    elf_name = re.findall(r'\w+$', pname)[0]
+    print(elf_name)
+    data = Bintime.objects.filter(elf_name='memtier_benchmark').aggregate(
+        Avg('user_time'), Avg('sys_time'), Avg('cpu_per'), Avg('elapse_time'),
+        Avg('max_size'), Avg('page_fault'), Avg('mpage_fault'))
+    print(data)
+    return JsonResponse({'code': 20000, 'data': data, 'elf_name': elf_name})
