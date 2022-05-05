@@ -104,12 +104,10 @@ def gettime(request):
     pname = request.GET.get('processname').replace("'", "")
     elf_name = re.findall(r'\w+$', pname)[0]
     print(elf_name)
-    data = Bintime.objects.filter(elf_name=elf_name)
+    data = list(Bintime.objects.values('id', 'elf_name', 'run_time', 'user_time', 'sys_time', 'cpu_per', 'elapse_time',
+                                       'max_size', 'page_fault', 'mpage_fault').filter(elf_name=elf_name))
     print(data)
-    return HttpResponse(json.dumps({
-        'code': 20000,
-        'data': serializers.serialize("json", data)
-    }))
+    return JsonResponse({'code': 20000, 'data': data})
 
 def getalltime(request):
     data = list(Bintime.objects.values('id', 'elf_name', 'run_time', 'user_time', 'sys_time', 'cpu_per', 'elapse_time',
