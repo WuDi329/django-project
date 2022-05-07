@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.db.models import Avg
 from MyEncoder import MyEncoder
 from board.models import Bintime
+from board.models import Elfinfo
 import re
 import os
 
@@ -74,8 +75,9 @@ def addtime(request):
     instruction = '/usr/bin/time -v -o time.txt'
     # preprocessing
     pname = request.GET.get('processname').replace("'", "")
-    params = request.GET.get('params').replace("'", "")
-    instruction = instruction + ' ' + pname + ' ' + params
+    # params = request.GET.get('params').replace("'", "")
+    instruction = instruction + ' ' + pname
+    #  + ' ' + params
     os.system(instruction)
     print(os.getcwd())
     with open('time.txt', 'r') as f:
@@ -98,9 +100,11 @@ def addtime(request):
                 page_fault=int(re.findall(r'\d+$', data[11])[0]),
                 mpage_fault=int(re.findall(r'\d+$', data[12])[0]))
     b.save()
-    return JsonResponse({'code': 20000})
+    return JsonResponse({'code': 20000, 'msg': 'add successfully'})
 
 def gettime(request):
+    print(12312312312)
+    print(request.GET)
     pname = request.GET.get('processname').replace("'", "")
     elf_name = re.findall(r'\w+$', pname)[0]
     print(elf_name)
@@ -123,8 +127,54 @@ def avgtime(request):
     pname = request.GET.get('processname').replace("'", "")
     elf_name = re.findall(r'\w+$', pname)[0]
     print(elf_name)
-    data = Bintime.objects.filter(elf_name='memtier_benchmark').aggregate(
+    elf_name_static = elf_name + '_static'
+    print(elf_name_static)
+    data = Bintime.objects.filter(elf_name=elf_name).aggregate(
         Avg('user_time'), Avg('sys_time'), Avg('cpu_per'), Avg('elapse_time'),
         Avg('max_size'), Avg('page_fault'), Avg('mpage_fault'))
+    data_static = Bintime.objects.filter(elf_name=elf_name_static).aggregate(
+        Avg('user_time'), Avg('sys_time'), Avg('cpu_per'), Avg('elapse_time'),
+        Avg('max_size'), Avg('page_fault'), Avg('mpage_fault'))
+    data = [data, data_static]
     print(data)
-    return JsonResponse({'code': 20000, 'data': data, 'elf_name': elf_name})
+    return JsonResponse({'code': 20000, 'data': data, 'elf_name': elf_name, })
+
+def addsize(request):
+    instruction = 'size'
+    # preprocessing
+    pname = request.GET.get('processname').replace("'", "")
+    elf_name = re.findall(r'\w+$', pname)[0]
+    # params = request.GET.get('params').replace("'", "")
+    instruction = instruction + ' ' + pname + ' > size.txt '
+    #  + ' ' + params
+    os.system(instruction)
+    print(os.getcwd())
+    with open('size.txt', 'r') as f:
+        data = f.readlines()
+    print(Decimal((re.findall(r'\d+', data[1]))[3]))
+    s = Elfinfo(elf_name=elf_name, text_length=Decimal((re.findall(r'\d+.', data[1]))[0]),
+                data_length=Decimal((re.findall(r'\d+', data[1]))[1]),
+                bss_length=Decimal((re.findall(r'\d+', data[1]))[2]),
+                dec_length=Decimal((re.findall(r'\d+', data[1]))[3]))
+    s.save()
+    return JsonResponse({'code': 20000, 'msg': 'add successfully'})
+
+def getallsize(request):
+    data = list(Elfinfo.objects.distinct().values('elf_name', 'text_length', 'data_length', 'bss_length', 'dec_length'))
+    # data = serializers.serialize("json", data)
+    print(data)
+    return JsonResponse({'code': 20000, 'data': data})
+
+def getsize(request):
+    pname = request.GET.get('processname').replace("'", "")
+    elf_name = re.findall(r'\w+$', pname)[0]
+    print(elf_name)
+    elf_name_static = elf_name + '_static'
+    print(elf_name_static)
+    data = Elfinfo.objects.filter(elf_name=elf_name).values(
+        'elf_name', 'text_length', 'data_length', 'bss_length', 'dec_length').first()
+    data_static = Elfinfo.objects.filter(elf_name=elf_name_static).values(
+        'elf_name', 'text_length', 'data_length', 'bss_length', 'dec_length').first()
+    data = [data, data_static]
+    print(data)
+    return JsonResponse({'code': 20000, 'data': data, 'elf_name': elf_name, })

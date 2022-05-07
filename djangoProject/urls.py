@@ -33,6 +33,11 @@ urlpatterns = [
     path('time/add/', views.addtime),
     path('time/get/', views.gettime),
     path('time/avg/', views.avgtime),
-    path('time/getall/', views.getalltime)
+    path('time/getall/', views.getalltime),
+
+    # size
+    path('size/add/', views.addsize),
+    path('size/get/', views.getsize),
+    path('size/getall/', views.getallsize)
 
 ]
