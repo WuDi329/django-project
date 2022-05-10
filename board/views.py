@@ -83,14 +83,7 @@ def addtime(request):
     with open('time.txt', 'r') as f:
         data = f.readlines()
     print(data)
-    # print(Decimal(re.findall(r'\d+.\d+$', data[4])[0]))
-    # print(Decimal(re.findall(r'\d+.\d+$', data[1])[0]))
-    # print(Decimal(re.findall(r'\d+.\d+$', data[2])[0]))
-    # print(int(re.findall(r'\d+', data[3])[0]))
-    # print(Decimal(re.findall(r'\d+.\d+$', data[4])[0]))
-    # print(int(re.findall(r'\d+$', data[9])[0]))
     create_time = timezone.now()
-    # print(re.findall(r'\w+$', '/home/wudi/1234/memtier_benchmark'))
     b = Bintime(elf_name=re.findall(r'\w+$', pname)[0], run_time=create_time,
                 user_time=Decimal(re.findall(r'\d+.\d+$', data[1])[0]),
                 sys_time=Decimal(re.findall(r'\d+.\d+$', data[2])[0]),
@@ -103,8 +96,6 @@ def addtime(request):
     return JsonResponse({'code': 20000, 'msg': 'add successfully'})
 
 def gettime(request):
-    print(12312312312)
-    print(request.GET)
     pname = request.GET.get('processname').replace("'", "")
     elf_name = re.findall(r'\w+$', pname)[0]
     print(elf_name)
@@ -144,9 +135,7 @@ def addsize(request):
     # preprocessing
     pname = request.GET.get('processname').replace("'", "")
     elf_name = re.findall(r'\w+$', pname)[0]
-    # params = request.GET.get('params').replace("'", "")
     instruction = instruction + ' ' + pname + ' > size.txt '
-    #  + ' ' + params
     os.system(instruction)
     print(os.getcwd())
     with open('size.txt', 'r') as f:
@@ -165,16 +154,25 @@ def getallsize(request):
     print(data)
     return JsonResponse({'code': 20000, 'data': data})
 
-def getsize(request):
+def getAvgsize(request):
     pname = request.GET.get('processname').replace("'", "")
     elf_name = re.findall(r'\w+$', pname)[0]
     print(elf_name)
     elf_name_static = elf_name + '_static'
     print(elf_name_static)
     data = Elfinfo.objects.filter(elf_name=elf_name).values(
-        'elf_name', 'text_length', 'data_length', 'bss_length', 'dec_length').first()
+         'text_length', 'data_length', 'bss_length', 'dec_length').first()
     data_static = Elfinfo.objects.filter(elf_name=elf_name_static).values(
-        'elf_name', 'text_length', 'data_length', 'bss_length', 'dec_length').first()
+         'text_length', 'data_length', 'bss_length', 'dec_length').first()
     data = [data, data_static]
     print(data)
     return JsonResponse({'code': 20000, 'data': data, 'elf_name': elf_name, })
+
+def getsize(request):
+    pname = request.GET.get('processname').replace("'", "")
+    elf_name = re.findall(r'\w+$', pname)[0]
+    print(elf_name)
+    data = Elfinfo.objects.filter(elf_name=elf_name).values('elf_name', 'text_length', 'data_length', 'bss_length', 'dec_length').first()
+    data = [data]
+    print(data)
+    return JsonResponse({'code': 20000, 'data': data})

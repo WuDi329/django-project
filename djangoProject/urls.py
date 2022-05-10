@@ -37,6 +37,7 @@ urlpatterns = [
 
     # size
     path('size/add/', views.addsize),
+    path('size/getavg/', views.getAvgsize),
     path('size/get/', views.getsize),
     path('size/getall/', views.getallsize)
 
