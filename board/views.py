@@ -227,6 +227,7 @@ def getperf(request):
 
     data = list(Perfmess.objects.filter(elf_name=elf_name, params=params).values('id', 'elf_name', 'params', 'run_time',
                                                                            'instructions', 'branches', 'branches_misses',
+                                                                                 'pu_utilize',
                                                                            'l1_dcache', 'l1_dcache_misses',
                                                                            'llc_cache', 'llc_cache_misses',
                                                                            'l1_icache_misses', 'dtlb_cache',
@@ -236,11 +237,12 @@ def getperf(request):
 
 def getallperf(request):
     data = list(Perfmess.objects.distinct().values('id', 'elf_name', 'params', 'run_time',
-                                                                           'instructions', 'branches', 'branches_misses',
-                                                                           'l1_dcache', 'l1_dcache_misses',
-                                                                           'llc_cache', 'llc_cache_misses',
-                                                                           'l1_icache_misses', 'dtlb_cache',
-                                                                           'dtlb_cache_misses', 'itlb_cache_misses'))
+                                                    'instructions', 'branches', 'branches_misses',
+                                                    'cpu_utilize',
+                                                    'l1_dcache', 'l1_dcache_misses',
+                                                    'llc_cache', 'llc_cache_misses',
+                                                    'l1_icache_misses', 'dtlb_cache',
+                                                    'dtlb_cache_misses', 'itlb_cache_misses'))
     print(data)
     return JsonResponse({'code': 20000, 'data': data})
 
