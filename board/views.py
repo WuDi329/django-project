@@ -8,6 +8,7 @@ from django.db.models import Avg
 from MyEncoder import MyEncoder
 from board.models import Bintime
 from board.models import Elfinfo
+from board.models import Perfmess
 import re
 import os
 
@@ -176,3 +177,91 @@ def getsize(request):
     data = [data]
     print(data)
     return JsonResponse({'code': 20000, 'data': data})
+
+def addperf(request):
+    instruction = 'perf stat -o perf.txt -e task-clock,instructions,branches,' \
+                  'branch-misses,L1-dcache-loads,L1-dcache-load-misses,' \
+                  'LLC-loads,LLC-load-misses,L1-icache-load-misses,' \
+                  'dTLB-loads,dTLB-load-misses,iTLB-load-misses'
+    # preprocessing
+    pname = request.GET.get('processname').replace("'", "")
+    params = request.GET.get('params').replace("'", "")
+    elf_name = re.findall(r'\w+$', pname)[0]
+    instruction = instruction + ' ' + pname + ' ' + params
+    os.system(instruction)
+    print(os.getcwd())
+    with open('perf.txt', 'r') as f:
+        data = f.readlines()
+    # print(data)
+    create_time = timezone.now()
+    with open('perf-new.txt', 'w') as f:
+        for line in data:
+            new_line = line.replace(",", "")
+            f.write(new_line)
+
+    with open('perf-new.txt', 'r') as f:
+        data = f.readlines()
+    print(data)
+    # print(Decimal((re.findall(r'(\d+,)\d+', data[6]))[0]))
+    s = Perfmess(elf_name=elf_name, params=params, run_time=create_time,
+                 cpu_utilize=Decimal((re.findall(r'\d+.\d+(?= CPUs)', data[5]))[0]),
+                instructions=Decimal((re.findall(r'\d+', data[6]))[0]),
+                branches=Decimal((re.findall(r'\d+', data[7]))[0]),
+                branches_misses=Decimal((re.findall(r'\d+', data[8]))[0]),
+                 l1_dcache=Decimal((re.findall(r'\d+', data[9]))[0]),
+                l1_dcache_misses=Decimal((re.findall(r'\d+', data[10]))[0]),
+                 llc_cache=Decimal((re.findall(r'\d+', data[11]))[0]),
+                 llc_cache_misses=Decimal((re.findall(r'\d+', data[12]))[0]),
+                 l1_icache_misses=Decimal((re.findall(r'\d+', data[13]))[0]),
+                 dtlb_cache=Decimal((re.findall(r'\d+', data[14]))[0]),
+                 dtlb_cache_misses=Decimal((re.findall(r'\d+', data[15]))[0]),
+                 itlb_cache_misses=Decimal((re.findall(r'\d+', data[16]))[0]))
+    s.save()
+    return JsonResponse({'code': 20000, 'msg': 'add successfully'})
+
+def getperf(request):
+    pname = request.GET.get('processname').replace("'", "")
+    params = request.GET.get('params').replace("'", "")
+    elf_name = re.findall(r'\w+$', pname)[0]
+    print(elf_name)
+
+    data = list(Perfmess.objects.filter(elf_name=elf_name, params=params).values('id', 'elf_name', 'params', 'run_time',
+                                                                           'instructions', 'branches', 'branches_misses',
+                                                                           'l1_dcache', 'l1_dcache_misses',
+                                                                           'llc_cache', 'llc_cache_misses',
+                                                                           'l1_icache_misses', 'dtlb_cache',
+                                                                           'dtlb_cache_misses', 'itlb_cache_misses'))
+    print(data)
+    return JsonResponse({'code': 20000, 'data': data})
+
+def getallperf(request):
+    data = list(Perfmess.objects.distinct().values('id', 'elf_name', 'params', 'run_time',
+                                                                           'instructions', 'branches', 'branches_misses',
+                                                                           'l1_dcache', 'l1_dcache_misses',
+                                                                           'llc_cache', 'llc_cache_misses',
+                                                                           'l1_icache_misses', 'dtlb_cache',
+                                                                           'dtlb_cache_misses', 'itlb_cache_misses'))
+    print(data)
+    return JsonResponse({'code': 20000, 'data': data})
+
+def getAvgperf(request):
+    pname = request.GET.get('processname').replace("'", "")
+    params = request.GET.get('params').replace("'", "")
+    elf_name = re.findall(r'\w+$', pname)[0]
+    print(elf_name)
+    elf_name_static = elf_name + '_static'
+    print(elf_name_static)
+
+    data = Perfmess.objects.filter(elf_name=elf_name, params=params).aggregate(
+         Avg('instructions'), Avg('branches'), Avg('branches_misses'),
+         Avg('l1_dcache'),
+         Avg('l1_dcache_misses'), Avg('llc_cache'), Avg('llc_cache_misses'),
+         Avg('l1_icache_misses'), Avg('dtlb_cache'), Avg('dtlb_cache_misses'), Avg('itlb_cache_misses'))
+    data_static = Perfmess.objects.filter(elf_name=elf_name_static, params=params).aggregate(
+         Avg('instructions'), Avg('branches'), Avg('branches_misses'), Avg('l1_dcache'),
+         Avg('l1_dcache_misses'), Avg('llc_cache'), Avg('llc_cache_misses'),
+         Avg('l1_icache_misses'), Avg('dtlb_cache'), Avg('dtlb_cache_misses'),
+         Avg('itlb_cache_misses'))
+    data = [data, data_static]
+    print(data)
+    return JsonResponse({'code': 20000, 'data': data, 'elf_name': elf_name})

@@ -39,6 +39,12 @@ urlpatterns = [
     path('size/add/', views.addsize),
     path('size/getavg/', views.getAvgsize),
     path('size/get/', views.getsize),
-    path('size/getall/', views.getallsize)
+    path('size/getall/', views.getallsize),
+
+    # perf
+    path('perf/add/', views.addperf),
+    path('perf/getavg/', views.getAvgperf),
+    path('perf/get/', views.getperf),
+    path('perf/getall/', views.getallperf)
 
 ]

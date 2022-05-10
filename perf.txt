@@ -1,0 +1,24 @@
+# started on Tue May 10 14:43:19 2022
+
+
+ Performance counter stats for '/home/wudi/Desktop/mem_sta/memtier_benchmark/memtier_benchmark_static':
+
+         11,834.97 msec task-clock                #    1.686 CPUs utilized          
+    50,628,823,331      instructions                                                  (44.58%)
+     9,983,348,148      branches                  #  843.547 M/sec                    (53.64%)
+       140,777,534      branch-misses             #    1.41% of all branches          (62.71%)
+    15,464,580,860      L1-dcache-loads           # 1306.686 M/sec                    (62.92%)
+       982,454,596      L1-dcache-load-misses     #    6.35% of all L1-dcache hits    (62.95%)
+       135,325,006      LLC-loads                 #   11.434 M/sec                    (63.45%)
+           396,427      LLC-load-misses           #    0.29% of all LL-cache hits     (64.69%)
+     3,974,310,573      L1-icache-load-misses                                         (37.08%)
+    15,583,437,917      dTLB-loads                # 1316.729 M/sec                    (37.05%)
+         2,570,386      dTLB-load-misses          #    0.02% of all dTLB cache hits   (36.55%)
+        89,563,368      iTLB-load-misses                                              (35.31%)
+
+       7.020500247 seconds time elapsed
+
+       4.818856000 seconds user
+       7.570782000 seconds sys
+
+

@@ -30,3 +30,21 @@ class Elfinfo(models.Model):
 
     def __str__(self):
         return self.elf_name
+
+class Perfmess(models.Model):
+    elf_name = models.CharField(max_length=200)
+    params = models.CharField(max_length=200)
+    run_time = models.DateTimeField(auto_now_add=True)
+    cpu_utilize = models.DecimalField(max_digits=4, decimal_places=3)
+    instructions = models.DecimalField(max_digits=12, decimal_places=0)
+    branches = models.DecimalField(max_digits=12, decimal_places=0)
+    branches_misses = models.DecimalField(max_digits=12, decimal_places=0)
+    l1_dcache = models.DecimalField(max_digits=12, decimal_places=0)
+    l1_dcache_misses = models.DecimalField(max_digits=12, decimal_places=0)
+    llc_cache = models.DecimalField(max_digits=12, decimal_places=0)
+    llc_cache_misses = models.DecimalField(max_digits=12, decimal_places=0)
+    l1_icache_misses = models.DecimalField(max_digits=12, decimal_places=0)
+    dtlb_cache = models.DecimalField(max_digits=12, decimal_places=0)
+    dtlb_cache_misses = models.DecimalField(max_digits=12, decimal_places=0)
+    itlb_cache_misses = models.DecimalField(max_digits=12, decimal_places=0)
+
