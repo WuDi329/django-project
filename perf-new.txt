@@ -1,24 +1,24 @@
-# started on Tue May 10 14:43:19 2022
+# started on Wed May 11 03:58:09 2022
 
 
- Performance counter stats for '/home/wudi/Desktop/mem_sta/memtier_benchmark/memtier_benchmark_static':
+ Performance counter stats for '/home/wudi/Desktop/memtier_benchmark/memtier_benchmark':
 
-         11834.97 msec task-clock                #    1.686 CPUs utilized          
-    50628823331      instructions                                                  (44.58%)
-     9983348148      branches                  #  843.547 M/sec                    (53.64%)
-       140777534      branch-misses             #    1.41% of all branches          (62.71%)
-    15464580860      L1-dcache-loads           # 1306.686 M/sec                    (62.92%)
-       982454596      L1-dcache-load-misses     #    6.35% of all L1-dcache hits    (62.95%)
-       135325006      LLC-loads                 #   11.434 M/sec                    (63.45%)
-           396427      LLC-load-misses           #    0.29% of all LL-cache hits     (64.69%)
-     3974310573      L1-icache-load-misses                                         (37.08%)
-    15583437917      dTLB-loads                # 1316.729 M/sec                    (37.05%)
-         2570386      dTLB-load-misses          #    0.02% of all dTLB cache hits   (36.55%)
-        89563368      iTLB-load-misses                                              (35.31%)
+         11945.49 msec task-clock                #    1.702 CPUs utilized          
+    49929566233      instructions                                                  (44.83%)
+     9863652034      branches                  #  825.722 M/sec                    (54.25%)
+       147825027      branch-misses             #    1.50% of all branches          (63.85%)
+    15419464822      L1-dcache-loads           # 1290.819 M/sec                    (64.03%)
+     1012307266      L1-dcache-load-misses     #    6.57% of all L1-dcache hits    (63.82%)
+       135477292      LLC-loads                 #   11.341 M/sec                    (63.88%)
+           737457      LLC-load-misses           #    0.54% of all LL-cache hits     (63.97%)
+     4093180774      L1-icache-load-misses                                         (35.97%)
+    15351030998      dTLB-loads                # 1285.090 M/sec                    (36.18%)
+         3863961      dTLB-load-misses          #    0.03% of all dTLB cache hits   (36.12%)
+        94602870      iTLB-load-misses                                              (36.03%)
 
-       7.020500247 seconds time elapsed
+       7.019403995 seconds time elapsed
 
-       4.818856000 seconds user
-       7.570782000 seconds sys
+       4.907575000 seconds user
+       7.653280000 seconds sys
 
 
