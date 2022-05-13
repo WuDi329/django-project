@@ -76,16 +76,16 @@ def addtime(request):
     instruction = '/usr/bin/time -v -o time.txt'
     # preprocessing
     pname = request.GET.get('processname').replace("'", "")
-    # params = request.GET.get('params').replace("'", "")
-    instruction = instruction + ' ' + pname
-    #  + ' ' + params
+    params = request.GET.get('params').replace("'", "")
+    instruction = instruction + ' ' + pname + ' ' + params
     os.system(instruction)
     print(os.getcwd())
     with open('time.txt', 'r') as f:
         data = f.readlines()
     print(data)
     create_time = timezone.now()
-    b = Bintime(elf_name=re.findall(r'\w+$', pname)[0], run_time=create_time,
+    b = Bintime(elf_name=re.findall(r'\w+$', pname)[0], params=params,
+                run_time=create_time,
                 user_time=Decimal(re.findall(r'\d+.\d+$', data[1])[0]),
                 sys_time=Decimal(re.findall(r'\d+.\d+$', data[2])[0]),
                 cpu_per=int(re.findall(r'\d+', data[3])[0]),
@@ -98,10 +98,11 @@ def addtime(request):
 
 def gettime(request):
     pname = request.GET.get('processname').replace("'", "")
+    params = request.GET.get('params').replace("'", "")
     elf_name = re.findall(r'\w+$', pname)[0]
     print(elf_name)
     data = list(Bintime.objects.values('id', 'elf_name', 'run_time', 'user_time', 'sys_time', 'cpu_per', 'elapse_time',
-                                       'max_size', 'page_fault', 'mpage_fault').filter(elf_name=elf_name))
+                                       'max_size', 'page_fault', 'mpage_fault').filter(elf_name=elf_name, params=params))
     print(data)
     return JsonResponse({'code': 20000, 'data': data})
 
@@ -117,14 +118,15 @@ def getalltime(request):
 
 def avgtime(request):
     pname = request.GET.get('processname').replace("'", "")
+    params = request.GET.get('params').replace("'", "")
     elf_name = re.findall(r'\w+$', pname)[0]
     print(elf_name)
     elf_name_static = elf_name + '_static'
     print(elf_name_static)
-    data = Bintime.objects.filter(elf_name=elf_name).aggregate(
+    data = Bintime.objects.filter(elf_name=elf_name, params=params).aggregate(
         Avg('user_time'), Avg('sys_time'), Avg('cpu_per'), Avg('elapse_time'),
         Avg('max_size'), Avg('page_fault'), Avg('mpage_fault'))
-    data_static = Bintime.objects.filter(elf_name=elf_name_static).aggregate(
+    data_static = Bintime.objects.filter(elf_name=elf_name_static, params=params).aggregate(
         Avg('user_time'), Avg('sys_time'), Avg('cpu_per'), Avg('elapse_time'),
         Avg('max_size'), Avg('page_fault'), Avg('mpage_fault'))
     data = [data, data_static]
@@ -227,7 +229,7 @@ def getperf(request):
 
     data = list(Perfmess.objects.filter(elf_name=elf_name, params=params).values('id', 'elf_name', 'params', 'run_time',
                                                                            'instructions', 'branches', 'branches_misses',
-                                                                                 'pu_utilize',
+                                                                                 'cpu_utilize',
                                                                            'l1_dcache', 'l1_dcache_misses',
                                                                            'llc_cache', 'llc_cache_misses',
                                                                            'l1_icache_misses', 'dtlb_cache',

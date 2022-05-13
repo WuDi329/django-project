@@ -8,6 +8,7 @@ class User(models.Model):
 
 class Bintime(models.Model):
     elf_name = models.CharField(max_length=200)
+    params = models.CharField(max_length=200, default=" ")
     # the true date when i process
     run_time = models.DateTimeField(auto_now_add=True)
     user_time = models.DecimalField(max_digits=6, decimal_places=3)
