@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from board import views
+from another import another_views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -45,6 +46,12 @@ urlpatterns = [
     path('perf/add/', views.addperf),
     path('perf/getavg/', views.getAvgperf),
     path('perf/get/', views.getperf),
-    path('perf/getall/', views.getallperf)
+    path('perf/getall/', views.getallperf),
+
+    #strace
+    path('strace/add/', another_views.addstrace),
+    # path('strace/getavg/', another_views.getAvgstrace),
+    # path('strace/get/', another_views.getstrace),
+    # path('strace/getall/', another_views.getallstrace)
 
 ]

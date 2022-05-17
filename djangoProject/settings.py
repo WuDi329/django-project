@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# from djangoProject import strace_router
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'board.apps.BoardConfig',
+    'another.apps.AnotherConfig',
     'corsheaders',
 ]
 
@@ -113,8 +116,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'strace': {
+        'NAME': 'strace_data',
+        'ENGINE': 'djongo',
     }
 }
+
+DATABASE_ROUTERS = ['djangoProject.strace_router.StraceRouter']
+
+
+
 
 
 # Password validation

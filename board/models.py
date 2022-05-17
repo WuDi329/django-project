@@ -49,3 +49,29 @@ class Perfmess(models.Model):
     dtlb_cache_misses = models.DecimalField(max_digits=12, decimal_places=0)
     itlb_cache_misses = models.DecimalField(max_digits=12, decimal_places=0)
 
+
+class Stracemess(models.Model):
+    elf_name = models.CharField(max_length=200)
+    params = models.CharField(max_length=200)
+    run_time = models.DateTimeField(auto_now_add=True)
+    write_avgsec = models.DecimalField(max_digits=12, decimal_places=0)
+    write_times = models.DecimalField(max_digits=12, decimal_places=0)
+    read_avgsec = models.DecimalField(max_digits=12, decimal_places=0)
+    read_times = models.DecimalField(max_digits=12, decimal_places=0)
+    close_avgsec = models.DecimalField(max_digits=12, decimal_places=0)
+    close_times = models.DecimalField(max_digits=12, decimal_places=0)
+    openat_avgsec = models.DecimalField(max_digits=12, decimal_places=0)
+    openat_times = models.DecimalField(max_digits=12, decimal_places=0)
+    stat_avgsec = models.DecimalField(max_digits=12, decimal_places=0)
+    stat_times = models.DecimalField(max_digits=12, decimal_places=0)
+    munmap_avgsec = models.DecimalField(max_digits=12, decimal_places=0)
+    munmap_times = models.DecimalField(max_digits=12, decimal_places=0)
+    fstat_avgsec = models.DecimalField(max_digits=12, decimal_places=0)
+    fstat_times = models.DecimalField(max_digits=12, decimal_places=0)
+    accept_avgsec = models.DecimalField(max_digits=12, decimal_places=0)
+    accept_times = models.DecimalField(max_digits=12, decimal_places=0)
+    mmap_avgsec = models.DecimalField(max_digits=12, decimal_places=0)
+    mmap_times = models.DecimalField(max_digits=12, decimal_places=0)
+
+
+
