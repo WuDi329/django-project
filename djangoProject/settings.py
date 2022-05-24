@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'board.apps.BoardConfig',
+    'django_extensions',
     'another.apps.AnotherConfig',
     'corsheaders',
 ]
@@ -54,6 +55,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
 
 # 跨域增加忽略
 CORS_ALLOW_CREDENTIALS = True

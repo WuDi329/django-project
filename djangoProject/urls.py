@@ -50,8 +50,8 @@ urlpatterns = [
 
     #strace
     path('strace/add/', another_views.addstrace),
-    # path('strace/getavg/', another_views.getAvgstrace),
-    # path('strace/get/', another_views.getstrace),
+    path('strace/getavg/', another_views.getavgstrace),
+    path('strace/get/', another_views.getstrace),
     # path('strace/getall/', another_views.getallstrace)
 
 ]

@@ -1,2 +1,2 @@
    text	   data	    bss	    dec	    hex	filename
- 254514	   5888	     64	 260466	  3f972	/home/wudi/Desktop/memtier_benchmark/memtier_benchmark
+ 901433	  22044	  26428	 949905	  e7e91	/home/wudi/Desktop/hts_sta/htstress/htstress_static

@@ -2,9 +2,9 @@ from djongo import models
 
 class jilu(models.Model):
     name = models.CharField(max_length=200)
-    per_time = models.DecimalField(max_digits=12, decimal_places=0)
-    call_times = models.DecimalField(max_digits=12, decimal_places=0)
-    percent = models.DecimalField(max_digits=6, decimal_places=3)
+    per_time = models.CharField(max_length=20)
+    call_times = models.CharField(max_length=20)
+    percent = models.CharField(max_length=20)
 
     class Meta:
         abstract = True
